@@ -70,6 +70,17 @@ public class GerenciarUsuarioService {
         throw new UsuarioNaoEncontradoException();
     }
 
+    public SucessMessageRepresentation removerUsuario(Long id) throws Exception {
+        log.info("=== Consultar usuário");
+        this.consultaUsuario(id);
+        repository.deleteById(id);
+
+        return SucessMessageRepresentation.builder()
+                .message("Removido com sucesso")
+                .code(0)
+                .build();
+    }
+
 
 
 
