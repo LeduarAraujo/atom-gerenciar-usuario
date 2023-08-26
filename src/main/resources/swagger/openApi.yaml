@@ -1,0 +1,400 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    Contrato do Atomico responsavel por gerenciar os dados de usuarios
+  contact:
+    email: leduar.araujo@hotmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+
+tags:
+  - name: Usuario
+    description: Dados dos usuarios
+  - name: Carro
+    description: Dados dos carros dos usuarios
+
+paths:
+  # Rotas que não exigem autenticação
+  /api/signin:
+    post:
+      operationId: signin
+      tags:
+        - Usuario
+      summary: Realiza o login do usuario
+      description: Realiza o login do usuario
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninUsuarioRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigninUsuarioResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+  /api/users:
+    get:
+      operationId: listUsers
+      tags:
+        - Usuario
+      summary: Lista todos os usuarios
+      description: Lista todos os usuarios
+      security:
+        - OAuth2: [ ]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listUsersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    post:
+      operationId: cadUsers
+      tags:
+        - Usuario
+      summary: Cadastra o usuario
+      description: Cadastra o usuario
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cadastroUsuarioRequest'
+        required: true
+
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SucessMessage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+  /api/users/{id}:
+    get:
+      operationId: buscarUsuario
+      tags:
+        - Usuario
+      summary: Busca os dados do usuario pelo id
+      description: Busca os dados do usuario pelo id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dadosUsuarioResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    delete:
+      operationId: removerUsuario
+      tags:
+        - Usuario
+      summary: Remove o usuario pelo id
+      description: Remove o usuario pelo id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SucessMessage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    post:
+      operationId: atualizarUsuario
+      tags:
+        - Usuario
+      summary: Atualiza os dados do usuario pelo id
+      description: Atualiza os dados do usuario pelo id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/atualizarUsuarioRequest'
+        required: true
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SucessMessage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+  # Rotas que exigem autenticação
+  /api/me:
+    get:
+      operationId: getUsuarioLogado
+      tags:
+        - Carro
+      summary: Retorna as informações do usuario logado
+      description: Retorna as informações do usuario logado
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+
+components:
+  schemas:
+    SigninUsuarioRequest:
+      type: object
+      properties:
+        login:
+          type: string
+          example: "hello.world"
+        senha:
+          type: string
+          example: "h3ll0"
+
+    SigninUsuarioResponse:
+      type: object
+      properties:
+        token_jwt:
+          type: string
+          example: "yuiyasidya87sd6as87datys8d76atsdy6as87d6ytas87d6ytas78d6ytas8d6"
+
+    listUsersResponse:
+      type: object
+      properties:
+        listUser:
+          type: array
+          items:
+            $ref: '#/components/schemas/dadosUsuarioResponse'
+
+    dadosUsuarioResponse:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Hello"
+        lastName:
+          type: string
+          example: "World"
+        email:
+          type: string
+          example: "hello@world.com"
+        birthday:
+          type: string
+          example: "1990-05-01"
+        login:
+          type: string
+          example: "hello.world"
+        password:
+          type: string
+          example: "h3ll0"
+        phone:
+          type: string
+          example: "988888888"
+        cars:
+          type: array
+          items:
+            $ref: '#/components/schemas/car'
+
+    car:
+      type: object
+      properties:
+        year:
+          type: integer
+          example: 2018
+        licensePlate:
+          type: string
+          example: "PDV-0625"
+        model:
+          type: string
+          example: "Audi"
+        color:
+          type: string
+          example: "White"
+
+    cadastroUsuarioRequest:
+      $ref: '#/components/schemas/dadosUsuarioResponse'
+
+    atualizarUsuarioRequest:
+      $ref: '#/components/schemas/dadosUsuarioResponse'
+
+
+    getUsuarioLogadoResponse:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        birthday:
+          type: string
+        login:
+          type: string
+        phone:
+          type: string
+        carros:
+          type: string
+        createdAt:
+          type: string
+        lastLogin:
+          type: string
+
+    SucessMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Sucesso"
+        code:
+          type: integer
+          example: 0
+
+    ErrorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        errorCode:
+          type: integer
+          example: 123
+
+  securitySchemes:
+    gerenciador:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write: escrita
+            read: leitura
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
