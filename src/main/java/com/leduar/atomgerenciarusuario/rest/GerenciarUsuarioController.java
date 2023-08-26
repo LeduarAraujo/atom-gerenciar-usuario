@@ -41,6 +41,14 @@ public class GerenciarUsuarioController implements ApiApi {
         }
     }
 
+    @Override
+    public ResponseEntity<SucessMessageRepresentation> removerUsuario(Long id) {
+        try {
+            return ResponseEntity.ok().body(service.removerUsuario(id));
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
 
 
 
@@ -72,14 +80,7 @@ public class GerenciarUsuarioController implements ApiApi {
 
 
 
-    @Override
-    public ResponseEntity<SucessMessageRepresentation> removerUsuario(Long id) {
-        try {
-            return ResponseEntity.ok().body(null);
-        } catch (Exception ex) {
-            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
-        }
-    }
+
 
     @Override
     public ResponseEntity<SucessMessageRepresentation> atualizarUsuario(Long id, DadosUsuarioResponseRepresentation body) {
