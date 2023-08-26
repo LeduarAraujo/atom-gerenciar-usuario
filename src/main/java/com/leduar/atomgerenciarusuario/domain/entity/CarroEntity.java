@@ -12,7 +12,7 @@ public class CarroEntity {
     @Id
     Long id;
     @Column
-    String carYear;
+    Integer carYear;
     @Column
     String licensePlate;
     @Column
