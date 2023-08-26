@@ -5,13 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-
 @AllArgsConstructor
 @Getter
 public enum ExceptionReasonEnum {
     LOGIN_INEXISTENTE(LoginSenhaException.class, HttpStatus.UNPROCESSABLE_ENTITY, "Invalid login or password");
-
     private Class exception;
     private HttpStatus statusCode;
     private String dsError;
@@ -22,6 +19,6 @@ public enum ExceptionReasonEnum {
                 return valor;
             }
         }
-        return LOGIN_INEXISTENTE;
+        return null;
     }
 }

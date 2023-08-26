@@ -12,6 +12,7 @@ import java.util.List;
 public class UsuarioEntity {
 
     @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     Long id;
     @Column
     String firstName;
@@ -27,6 +28,6 @@ public class UsuarioEntity {
     String password;
     @Column
     String phone;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<CarroEntity> cars;
 }

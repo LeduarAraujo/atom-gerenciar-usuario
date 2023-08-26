@@ -10,9 +10,10 @@ import lombok.Data;
 public class CarroEntity {
 
     @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     Long id;
     @Column
-    String carYear;
+    Integer carYear;
     @Column
     String licensePlate;
     @Column
