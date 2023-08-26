@@ -323,7 +323,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/car'
-
+        createdAt:
+          type: string
+          example: "1990-05-01"
+        lastLogin:
+          type: string
+          example: "1990-05-01"
     car:
       type: object
       properties:

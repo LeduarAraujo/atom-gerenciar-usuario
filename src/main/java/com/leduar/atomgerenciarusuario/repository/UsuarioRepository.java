@@ -9,4 +9,9 @@ import java.util.List;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     List<UsuarioEntity> findUsuarioEntityByLoginAndPassword(String login, String password);
+
+    List<UsuarioEntity> findUsuarioEntityByLogin(String login);
+
+    List<UsuarioEntity> findUsuarioEntityByEmail(String email);
+
 }

@@ -2,9 +2,11 @@ package com.leduar.atomgerenciarusuario.mapper;
 
 import com.baeldung.openapi.model.CarRepresentation;
 import com.baeldung.openapi.model.DadosUsuarioResponseRepresentation;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class UsuarioMapper {
                             .password(resp.getPassword())
                             .phone(resp.getPhone())
                             .cars(listCarToRepresentation(resp.getCars()))
+                            .createdAt(resp.getCreatedAt() != null ? resp.getCreatedAt().toString() : null)
+                            .lastLogin(resp.getLastLogin() != null ? resp.getLastLogin().toString() : null)
                     .build());
         });
 
@@ -73,7 +77,6 @@ public class UsuarioMapper {
         return retorno;
     }
 
-
     private static List<CarroEntity> listCarToEntity(List<CarRepresentation> request) {
         List<CarroEntity> retorno = new ArrayList<>();
 
@@ -89,6 +92,22 @@ public class UsuarioMapper {
         });
 
         return retorno;
+    }
+
+    public static DadosUsuarioResponseRepresentation consultarUsuarioEntityToRepresentation(UsuarioEntity usuarioEntity) {
+        return DadosUsuarioResponseRepresentation.builder()
+                .idUsuario(usuarioEntity.getId())
+                .firstName(usuarioEntity.getFirstName())
+                .lastName(usuarioEntity.getLastName())
+                .email(usuarioEntity.getEmail())
+                .birthday(usuarioEntity.getBirthday().toString())
+                .login(usuarioEntity.getLogin())
+                .password(usuarioEntity.getPassword())
+                .phone(usuarioEntity.getPhone())
+                .cars(listCarToRepresentation(usuarioEntity.getCars()))
+                .createdAt(usuarioEntity.getCreatedAt() != null ? usuarioEntity.getCreatedAt().toString() : null)
+                .lastLogin(usuarioEntity.getLastLogin() != null ? usuarioEntity.getLastLogin().toString() : null)
+                .build();
     }
 
 }

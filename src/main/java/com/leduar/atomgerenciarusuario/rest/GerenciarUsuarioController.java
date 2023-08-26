@@ -14,9 +14,6 @@ public class GerenciarUsuarioController implements ApiApi {
 
     private final GerenciarUsuarioService service;
 
-    /**
-     * @return
-     */
     @Override
     public ResponseEntity<ListUsersResponseRepresentation> listUsers() {
         try {
@@ -35,6 +32,32 @@ public class GerenciarUsuarioController implements ApiApi {
         }
     }
 
+    @Override
+    public ResponseEntity<DadosUsuarioResponseRepresentation> buscarUsuario(Long id) {
+        try {
+            return ResponseEntity.ok().body(service.consultaUsuario(id));
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public ResponseEntity<SigninUsuarioResponseRepresentation> signin(SigninUsuarioRequestRepresentation signinUsuarioRequestRepresentation) {
@@ -47,14 +70,7 @@ public class GerenciarUsuarioController implements ApiApi {
 
 
 
-    @Override
-    public ResponseEntity<DadosUsuarioResponseRepresentation> buscarUsuario(Long id) {
-        try {
-            return ResponseEntity.ok().body(null);
-        } catch (Exception ex) {
-            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
-        }
-    }
+
 
     @Override
     public ResponseEntity<SucessMessageRepresentation> removerUsuario(Long id) {
