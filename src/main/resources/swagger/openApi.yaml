@@ -294,6 +294,10 @@ components:
     dadosUsuarioResponse:
       type: object
       properties:
+        idUsuario:
+          type: integer
+          format: int64
+          example: 123
         firstName:
           type: string
           example: "Hello"
@@ -323,6 +327,10 @@ components:
     car:
       type: object
       properties:
+        idCarro:
+          type: integer
+          format: int64
+          example: 123
         year:
           type: integer
           example: 2018

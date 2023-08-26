@@ -15,6 +15,18 @@ public class GerenciarUsuarioController implements ApiApi {
     private final GerenciarUsuarioService service;
 
     /**
+     * @return
+     */
+    @Override
+    public ResponseEntity<ListUsersResponseRepresentation> listUsers() {
+        try {
+            return ResponseEntity.ok().body(service.listarUsuarios());
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
+
+    /**
      * @param signinUsuarioRequestRepresentation
      * @return
      */
@@ -22,18 +34,6 @@ public class GerenciarUsuarioController implements ApiApi {
     public ResponseEntity<SigninUsuarioResponseRepresentation> signin(SigninUsuarioRequestRepresentation signinUsuarioRequestRepresentation) {
         try {
             return ResponseEntity.ok().body(service.iniciarSessao(signinUsuarioRequestRepresentation));
-        } catch (Exception ex) {
-            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
-        }
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public ResponseEntity<ListUsersResponseRepresentation> listUsers() {
-        try {
-            return ResponseEntity.ok().body(service.listarUsuarios());
         } catch (Exception ex) {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }

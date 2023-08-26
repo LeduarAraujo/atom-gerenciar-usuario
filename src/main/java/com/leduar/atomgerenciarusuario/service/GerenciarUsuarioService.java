@@ -20,6 +20,16 @@ public class GerenciarUsuarioService {
     private final UsuarioRepository repository;
 
     /**
+     * @return Listar dados usuários
+     */
+    public ListUsersResponseRepresentation listarUsuarios() {
+        log.info("=== Listando Usuarios da Tabela de Usuario");
+        return ListUsersResponseRepresentation.builder()
+                .listUser(UsuarioMapper.usuarioEntityToRepresentation(repository.findAll()))
+                .build();
+    }
+
+    /**
      * @param body
      * @return Token da sessão
      * @throws LoginSenhaException
@@ -37,17 +47,6 @@ public class GerenciarUsuarioService {
             throw new LoginSenhaException();
         }
     }
-
-    /**
-     * @return Listar dados usuários
-     */
-    public ListUsersResponseRepresentation listarUsuarios() {
-        log.info("=== Listando Usuarios da Tabela de Usuario");
-        return ListUsersResponseRepresentation.builder()
-                .listUser(UsuarioMapper.usuarioEntityToRepresentation(repository.findAll()))
-                .build();
-    }
-
 
     public SucessMessageRepresentation cadastrarUsuario(DadosUsuarioResponseRepresentation body) {
         log.info("=== Cadastrando Usuário");
