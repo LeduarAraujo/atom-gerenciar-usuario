@@ -2,7 +2,10 @@ package com.leduar.atomgerenciarusuario.service;
 
 import com.baeldung.openapi.model.*;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
+import com.leduar.atomgerenciarusuario.exceptions.EmailExistenteException;
+import com.leduar.atomgerenciarusuario.exceptions.LoginExistenteException;
 import com.leduar.atomgerenciarusuario.exceptions.LoginSenhaException;
+import com.leduar.atomgerenciarusuario.exceptions.UsuarioNaoEncontradoException;
 import com.leduar.atomgerenciarusuario.mapper.UsuarioMapper;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
@@ -11,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -29,13 +33,62 @@ public class GerenciarUsuarioService {
                 .build();
     }
 
-    public SucessMessageRepresentation cadastrarUsuario(DadosUsuarioResponseRepresentation body) {
+    public SucessMessageRepresentation cadastrarUsuario(DadosUsuarioResponseRepresentation body) throws Exception {
         log.info("=== Cadastrando Usuário");
 
+        this.validarCadastro(body);
         repository.save(UsuarioMapper.usuarioRepresentationToEntity(body));
 
-        return null;
+        return SucessMessageRepresentation.builder()
+                .message("Cadastrado com sucesso")
+                .code(0)
+                .build();
     }
+
+    /**
+     *  Tem a função de validar se o login ou o email ja conta na base de dados
+     * @param body
+     * @throws Exception
+     */
+    private void validarCadastro(DadosUsuarioResponseRepresentation body) throws Exception {
+        if (!repository.findUsuarioEntityByLogin(body.getLogin()).isEmpty()) {
+            throw new LoginExistenteException();
+        }
+
+        if (!repository.findUsuarioEntityByEmail(body.getEmail()).isEmpty()) {
+            throw new EmailExistenteException();
+        }
+    }
+
+    public DadosUsuarioResponseRepresentation consultaUsuario(Long id) throws Exception {
+        log.info("=== Consultar usuário");
+        Optional<UsuarioEntity> response = repository.findById(id);
+
+        if (response.isPresent())
+            return UsuarioMapper.consultarUsuarioEntityToRepresentation(response.get());
+
+        throw new UsuarioNaoEncontradoException();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -62,19 +115,10 @@ public class GerenciarUsuarioService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) {
         Jwt.validateToken(tokenJwt);
         return GetUsuarioLogadoResponseRepresentation.builder().build();
     }
+
+
 }
