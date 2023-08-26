@@ -61,6 +61,7 @@ public class UsuarioMapper {
 
     public static UsuarioEntity usuarioRepresentationToEntity(DadosUsuarioResponseRepresentation request) {
         UsuarioEntity retorno = new UsuarioEntity();
+        retorno.setId(request.getIdUsuario());
         retorno.setFirstName(request.getFirstName());
         retorno.setLastName(retorno.getLastName());
         retorno.setEmail(request.getEmail());
@@ -78,6 +79,7 @@ public class UsuarioMapper {
 
         request.forEach( carroEntity -> {
             CarroEntity entity = new CarroEntity();
+            entity.setId(carroEntity.getIdCarro());
             entity.setCarYear(carroEntity.getYear());
             entity.setColor(carroEntity.getColor());
             entity.setModel(carroEntity.getModel());

@@ -29,11 +29,25 @@ public class GerenciarUsuarioService {
                 .build();
     }
 
-    /**
-     * @param body
-     * @return Token da sessão
-     * @throws LoginSenhaException
-     */
+    public SucessMessageRepresentation cadastrarUsuario(DadosUsuarioResponseRepresentation body) {
+        log.info("=== Cadastrando Usuário");
+
+        repository.save(UsuarioMapper.usuarioRepresentationToEntity(body));
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public SigninUsuarioResponseRepresentation iniciarSessao(SigninUsuarioRequestRepresentation body) throws LoginSenhaException {
         log.info("=== Tentando iniciar sessão de login do usuario");
 
@@ -48,13 +62,7 @@ public class GerenciarUsuarioService {
         }
     }
 
-    public SucessMessageRepresentation cadastrarUsuario(DadosUsuarioResponseRepresentation body) {
-        log.info("=== Cadastrando Usuário");
 
-        repository.save(UsuarioMapper.usuarioRepresentationToEntity(body));
-
-        return null;
-    }
 
 
 
