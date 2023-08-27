@@ -1,9 +1,6 @@
 package com.leduar.atomgerenciarusuario.mapper;
 
-import com.baeldung.openapi.model.CarResponseRepresentation;
-import com.baeldung.openapi.model.DadosUsuarioResponseRepresentation;
-import com.baeldung.openapi.model.GetUsuarioLogadoResponseRepresentation;
-import com.baeldung.openapi.model.ListaCarrosUsuarioLogadoResponseRepresentation;
+import com.baeldung.openapi.model.*;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
 
@@ -145,5 +142,15 @@ public class UsuarioMapper {
                 .firstName(response.getFirstName())
                 .carros(listCarToRepresentation(response.getCars()))
                 .build();
+    }
+
+    public static CarroEntity montarDadosCarroNovo(CarRequestRepresentation carRequestRepresentation) {
+        CarroEntity carroEntity = new CarroEntity();
+        carroEntity.setModel(carRequestRepresentation.getModel());
+        carroEntity.setColor(carRequestRepresentation.getColor());
+        carroEntity.setLicensePlate(carRequestRepresentation.getLicensePlate());
+        carroEntity.setCarYear(carRequestRepresentation.getYear());
+
+        return carroEntity;
     }
 }

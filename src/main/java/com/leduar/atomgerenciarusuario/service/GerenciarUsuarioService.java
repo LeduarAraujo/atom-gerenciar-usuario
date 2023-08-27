@@ -157,21 +157,30 @@ public class GerenciarUsuarioService {
 
 
     public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) throws Exception {
+        return UsuarioMapper.getUsuarioLogado(getUsuarioLogado(tokenJwt));
+    }
+
+    private UsuarioEntity getUsuarioLogado(String tokenJwt) {
         Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
-        return UsuarioMapper.getUsuarioLogado(repository.
-                findById(Long.parseLong(
-                        sessao.getBody().get("id").toString())
-                ).get()
-        );
+        return repository.findById(Long.parseLong(
+                sessao.getBody().get("id").toString())
+        ).get();
     }
 
     public ListaCarrosUsuarioLogadoResponseRepresentation listarCarrosUsuarioLogado(String tokenJwt) {
-        Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
+        return UsuarioMapper.getListaCarrosUsuarioLogado(getUsuarioLogado(tokenJwt));
+    }
 
-        return UsuarioMapper.getListaCarrosUsuarioLogado(
-                repository.findById(Long.parseLong(
-                        sessao.getBody().get("id").toString())
-                ).get()
-        );
+    public SucessMessageRepresentation cadastrarCarroUsuarioLogado(String tokenJwt
+            , CarRequestRepresentation carRequestRepresentation) {
+
+        UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+        usuarioEntity.getCars().add(UsuarioMapper.montarDadosCarroNovo(carRequestRepresentation));
+        repository.save(usuarioEntity);
+
+        return SucessMessageRepresentation.builder()
+                .message("Sucesso ao incluir o novo veículo")
+                .code(0)
+                .build();
     }
 }
