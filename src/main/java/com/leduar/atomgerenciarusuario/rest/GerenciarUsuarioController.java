@@ -59,23 +59,6 @@ public class GerenciarUsuarioController implements ApiApi {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public ResponseEntity<SigninUsuarioResponseRepresentation> signin(SigninUsuarioRequestRepresentation signinUsuarioRequestRepresentation) {
         try {
@@ -84,6 +67,25 @@ public class GerenciarUsuarioController implements ApiApi {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
