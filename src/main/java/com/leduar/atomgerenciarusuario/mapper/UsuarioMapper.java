@@ -126,6 +126,7 @@ public class UsuarioMapper {
 
     public static GetUsuarioLogadoResponseRepresentation getUsuarioLogado(UsuarioEntity response) {
         return GetUsuarioLogadoResponseRepresentation.builder()
+                .idUsuarioLogado(response.getId())
                 .firstName(response.getFirstName())
                 .lastName(response.getLastName())
                 .email(response.getEmail())
