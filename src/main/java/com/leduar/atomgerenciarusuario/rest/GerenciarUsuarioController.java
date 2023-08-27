@@ -50,6 +50,15 @@ public class GerenciarUsuarioController implements ApiApi {
         }
     }
 
+    @Override
+    public ResponseEntity<SucessMessageRepresentation> atualizarUsuario(Long id, DadosUsuarioResponseRepresentation body) {
+        try {
+            return ResponseEntity.ok().body(service.atualizarUsuario(id, body));
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
+
 
 
 
@@ -82,14 +91,7 @@ public class GerenciarUsuarioController implements ApiApi {
 
 
 
-    @Override
-    public ResponseEntity<SucessMessageRepresentation> atualizarUsuario(Long id, DadosUsuarioResponseRepresentation body) {
-        try {
-            return ResponseEntity.ok().body(null);
-        } catch (Exception ex) {
-            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
-        }
-    }
+
 
     /*
     * - Endpoints que requer Autenticação
