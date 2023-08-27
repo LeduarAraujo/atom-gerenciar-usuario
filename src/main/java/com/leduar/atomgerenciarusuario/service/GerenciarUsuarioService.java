@@ -83,13 +83,14 @@ public class GerenciarUsuarioService {
 
     public SucessMessageRepresentation atualizarUsuario(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
         log.info("=== Atualizar usuário");
-        this.validarUpdate(id, body);
         Optional<UsuarioEntity> response = repository.findById(id);
 
         if (response.isPresent()){
+            this.validarUpdate(id, body);
+
             repository.save(UsuarioMapper.montarUsuarioAtualizado(response.get(), body));
             return SucessMessageRepresentation.builder()
-                    .message("Removido com sucesso")
+                    .message("Usuario atualizado com sucesso")
                     .code(0)
                     .build();
         }
@@ -106,11 +107,11 @@ public class GerenciarUsuarioService {
      * @throws Exception
      */
     private void validarUpdate(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
-        if (!repository.findUsuarioEntityByLoginAndIdIsNot(body.getLogin(), id).isEmpty()) {
+        if (!repository.findUsuarioEntityByLoginAndIdNot(body.getLogin(), id).isEmpty()) {
             throw new LoginExistenteException();
         }
 
-        if (!repository.findUsuarioEntityByEmailAndIdIsNot(body.getEmail(), id).isEmpty()) {
+        if (!repository.findUsuarioEntityByEmailAndIdNot(body.getEmail(), id).isEmpty()) {
             throw new EmailExistenteException();
         }
     }
