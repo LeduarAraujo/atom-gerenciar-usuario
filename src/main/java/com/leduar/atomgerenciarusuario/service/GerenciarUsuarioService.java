@@ -2,18 +2,16 @@ package com.leduar.atomgerenciarusuario.service;
 
 import com.baeldung.openapi.model.*;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
-import com.leduar.atomgerenciarusuario.exceptions.EmailExistenteException;
-import com.leduar.atomgerenciarusuario.exceptions.LoginExistenteException;
-import com.leduar.atomgerenciarusuario.exceptions.LoginSenhaException;
-import com.leduar.atomgerenciarusuario.exceptions.UsuarioNaoEncontradoException;
+import com.leduar.atomgerenciarusuario.exceptions.*;
 import com.leduar.atomgerenciarusuario.mapper.UsuarioMapper;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
+import com.leduar.atomgerenciarusuario.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -51,6 +49,8 @@ public class GerenciarUsuarioService {
      * @throws Exception
      */
     private void validarCadastro(DadosUsuarioResponseRepresentation body) throws Exception {
+        this.validarCampos(body);
+
         if (!repository.findUsuarioEntityByLogin(body.getLogin()).isEmpty()) {
             throw new LoginExistenteException();
         }
@@ -58,6 +58,19 @@ public class GerenciarUsuarioService {
         if (!repository.findUsuarioEntityByEmail(body.getEmail()).isEmpty()) {
             throw new EmailExistenteException();
         }
+    }
+
+    private void validarCampos(DadosUsuarioResponseRepresentation body) throws CampoVazioException {
+        if (body == null ||
+                !StringUtils.validarString(body.getEmail()) ||
+                !StringUtils.validarString(body.getLogin()) ||
+                !StringUtils.validarString(body.getFirstName()) ||
+                !StringUtils.validarString(body.getBirthday()) ||
+                !StringUtils.validarString(body.getPassword()) ||
+                !StringUtils.validarString(body.getPhone()) ||
+                !StringUtils.validarString(body.getLastName())
+        )
+            throw new CampoVazioException();
     }
 
     public DadosUsuarioResponseRepresentation consultaUsuario(Long id) throws Exception {
@@ -107,6 +120,8 @@ public class GerenciarUsuarioService {
      * @throws Exception
      */
     private void validarUpdate(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
+        this.validarCampos(body);
+
         if (!repository.findUsuarioEntityByLoginAndIdNot(body.getLogin(), id).isEmpty()) {
             throw new LoginExistenteException();
         }
@@ -116,55 +131,60 @@ public class GerenciarUsuarioService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public SigninUsuarioResponseRepresentation iniciarSessao(SigninUsuarioRequestRepresentation body) throws LoginSenhaException {
         log.info("=== Tentando iniciar sessão de login do usuario");
+        Optional<UsuarioEntity> optional = repository.findUsuarioEntityByLoginAndPassword(body.getLogin(), body.getSenha());
 
-        List<UsuarioEntity> response = repository.findUsuarioEntityByLoginAndPassword(body.getLogin(), body.getSenha());
+        if (!optional.isEmpty()) {
+            UsuarioEntity response = optional.get();
+            response.setLastLogin(LocalDateTime.now());
+            UsuarioEntity usuario = repository.save(response);
 
-        if (!response.isEmpty()) {
             return SigninUsuarioResponseRepresentation.builder()
-                    .tokenJwt(Jwt.gerarToken(response.get(0).getFirstName(), response.get(0).getId()))
+                    .tokenJwt(Jwt.gerarToken(usuario.getFirstName(), usuario.getId()))
                     .build();
         } else {
             throw new LoginSenhaException();
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) {
         Jwt.validateToken(tokenJwt);
         return GetUsuarioLogadoResponseRepresentation.builder().build();
     }
+
+
 
 
 
