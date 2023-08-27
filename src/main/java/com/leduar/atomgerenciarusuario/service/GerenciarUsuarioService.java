@@ -164,4 +164,14 @@ public class GerenciarUsuarioService {
                 ).get()
         );
     }
+
+    public ListaCarrosUsuarioLogadoResponseRepresentation listarCarrosUsuarioLogado(String tokenJwt) {
+        Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
+
+        return UsuarioMapper.getListaCarrosUsuarioLogado(
+                repository.findById(Long.parseLong(
+                        sessao.getBody().get("id").toString())
+                ).get()
+        );
+    }
 }
