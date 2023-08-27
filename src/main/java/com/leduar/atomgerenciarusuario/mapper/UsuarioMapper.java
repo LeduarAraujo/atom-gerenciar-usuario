@@ -3,6 +3,7 @@ package com.leduar.atomgerenciarusuario.mapper;
 import com.baeldung.openapi.model.CarResponseRepresentation;
 import com.baeldung.openapi.model.DadosUsuarioResponseRepresentation;
 import com.baeldung.openapi.model.GetUsuarioLogadoResponseRepresentation;
+import com.baeldung.openapi.model.ListaCarrosUsuarioLogadoResponseRepresentation;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
 
@@ -135,6 +136,14 @@ public class UsuarioMapper {
                 .phone(response.getPhone())
                 .createdAt(response.getCreatedAt().toString())
                 .lastLogin(response.getLastLogin().toString())
+                .build();
+    }
+
+    public static ListaCarrosUsuarioLogadoResponseRepresentation getListaCarrosUsuarioLogado(UsuarioEntity response) {
+        return ListaCarrosUsuarioLogadoResponseRepresentation.builder()
+                .idUsuario(response.getId())
+                .firstName(response.getFirstName())
+                .carros(listCarToRepresentation(response.getCars()))
                 .build();
     }
 }
