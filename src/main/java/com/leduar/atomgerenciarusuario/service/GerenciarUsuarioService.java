@@ -221,4 +221,15 @@ public class GerenciarUsuarioService {
         }
         throw new CarroNaoExistenteException();
     }
+
+    public SucessMessageRepresentation removerCarroUsuarioLogado(String tokenJwt, Long idCarro) {
+        UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+        usuarioEntity.getCars().removeIf(carro -> carro.getId() == idCarro);
+        repository.save(usuarioEntity);
+
+        return SucessMessageRepresentation.builder()
+                .message("Sucesso ao remover o veículo")
+                .code(0)
+                .build();
+    }
 }
