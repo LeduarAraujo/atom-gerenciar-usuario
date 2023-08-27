@@ -99,4 +99,13 @@ public class GerenciarUsuarioController implements ApiApi {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }
     }
+
+    @Override
+    public ResponseEntity<CarResponseRepresentation> buscarCarrosUsuarioLogado(String tokenJwt, Long idCarro) {
+        try {
+            return ResponseEntity.ok().body(service.buscarCarrosUsuarioLogado(tokenJwt, idCarro));
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
 }
