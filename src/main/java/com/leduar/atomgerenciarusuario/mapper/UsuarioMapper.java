@@ -1,16 +1,13 @@
 package com.leduar.atomgerenciarusuario.mapper;
 
-import com.baeldung.openapi.model.CarRepresentation;
+import com.baeldung.openapi.model.CarResponseRepresentation;
 import com.baeldung.openapi.model.DadosUsuarioResponseRepresentation;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.baeldung.openapi.model.GetUsuarioLogadoResponseRepresentation;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +47,11 @@ public class UsuarioMapper {
      * @param response
      * @return
      */
-    private static List<CarRepresentation> listCarToRepresentation(List<CarroEntity> response) {
-        List<CarRepresentation> retorno = new ArrayList<>();
+    private static @Valid List<CarResponseRepresentation> listCarToRepresentation(List<CarroEntity> response) {
+        List<CarResponseRepresentation> retorno = new ArrayList<>();
 
         response.forEach( carroEntity -> {
-            retorno.add(CarRepresentation.builder()
+            retorno.add(CarResponseRepresentation.builder()
                             .idCarro(carroEntity.getId())
                             .color(carroEntity.getColor())
                             .licensePlate(carroEntity.getLicensePlate())
@@ -80,7 +77,7 @@ public class UsuarioMapper {
         return retorno;
     }
 
-    private static List<CarroEntity> listCarToEntity(List<CarRepresentation> request) {
+    private static List<CarroEntity> listCarToEntity(@Valid List<CarResponseRepresentation> request) {
         List<CarroEntity> retorno = new ArrayList<>();
 
         request.forEach( carroEntity -> {
@@ -125,5 +122,13 @@ public class UsuarioMapper {
         usuarioEntity.setCars(listCarToEntity(body.getCars()));
 
         return usuarioEntity;
+    }
+
+    public static GetUsuarioLogadoResponseRepresentation getUsuarioLogado(UsuarioEntity response) {
+
+        return GetUsuarioLogadoResponseRepresentation.builder()
+                .createdAt(response.getCreatedAt().toString())
+                .lastLogin(response.getLastLogin().toString())
+                .build();
     }
 }
