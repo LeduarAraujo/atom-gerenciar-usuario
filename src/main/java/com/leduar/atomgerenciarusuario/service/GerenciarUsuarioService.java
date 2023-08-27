@@ -1,9 +1,11 @@
 package com.leduar.atomgerenciarusuario.service;
 
 import com.baeldung.openapi.model.*;
+import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
 import com.leduar.atomgerenciarusuario.exceptions.*;
 import com.leduar.atomgerenciarusuario.mapper.UsuarioMapper;
+import com.leduar.atomgerenciarusuario.repository.CarroRepository;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
 import com.leduar.atomgerenciarusuario.utils.StringUtils;
@@ -22,6 +24,8 @@ import java.util.Optional;
 public class GerenciarUsuarioService {
 
     private final UsuarioRepository repository;
+
+    private final CarroRepository carroRepository;
 
     /**
      * @return Listar dados usuários
@@ -172,9 +176,12 @@ public class GerenciarUsuarioService {
     }
 
     public SucessMessageRepresentation cadastrarCarroUsuarioLogado(String tokenJwt
-            , CarRequestRepresentation carRequestRepresentation) {
+            , CarRequestRepresentation carRequestRepresentation) throws Exception {
 
+        this.validarDadosCadastroCarro(carRequestRepresentation);
         UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+        this.validarDadosCadastroCarroExistente(carRequestRepresentation);
+
         usuarioEntity.getCars().add(UsuarioMapper.montarDadosCarroNovo(carRequestRepresentation));
         repository.save(usuarioEntity);
 
@@ -182,5 +189,36 @@ public class GerenciarUsuarioService {
                 .message("Sucesso ao incluir o novo veículo")
                 .code(0)
                 .build();
+    }
+
+    private void validarDadosCadastroCarro(CarRequestRepresentation body) throws CampoVazioException {
+        if (body == null ||
+                !StringUtils.validarString(body.getColor()) ||
+                !StringUtils.validarString(body.getModel()) ||
+                !StringUtils.validarString(body.getLicensePlate()) ||
+                body.getYear() == null)
+            throw new CampoVazioException();
+    }
+
+    private void validarDadosCadastroCarroExistente(CarRequestRepresentation body) throws Exception {
+        if(carroRepository.existsCarroEntitiesByLicensePlate(body.getLicensePlate()))
+            throw new PlacaExistenteException();
+    }
+
+    public CarResponseRepresentation buscarCarrosUsuarioLogado(String tokenJwt, Long idCarro) throws Exception {
+        UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+
+        Optional<CarroEntity> carroEntity = usuarioEntity.getCars().stream().filter(carro -> carro.getId() == idCarro).findFirst();
+
+        if (!carroEntity.isEmpty()) {
+            return CarResponseRepresentation.builder()
+                    .idCarro(carroEntity.get().getId())
+                    .color(carroEntity.get().getColor())
+                    .licensePlate(carroEntity.get().getLicensePlate())
+                    .model(carroEntity.get().getModel())
+                    .year(carroEntity.get().getCarYear())
+                    .build();
+        }
+        throw new CarroNaoExistenteException();
     }
 }
