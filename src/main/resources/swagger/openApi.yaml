@@ -613,6 +613,9 @@ components:
     getUsuarioLogadoResponse:
       type: object
       properties:
+        idUsuarioLogado:
+          type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -624,8 +627,6 @@ components:
         login:
           type: string
         phone:
-          type: string
-        carros:
           type: string
         createdAt:
           type: string

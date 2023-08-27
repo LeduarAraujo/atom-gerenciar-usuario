@@ -67,7 +67,7 @@ public class UsuarioMapper {
         UsuarioEntity retorno = new UsuarioEntity();
         retorno.setId(request.getIdUsuario());
         retorno.setFirstName(request.getFirstName());
-        retorno.setLastName(retorno.getLastName());
+        retorno.setLastName(request.getLastName());
         retorno.setEmail(request.getEmail());
         retorno.setBirthday(LocalDate.parse(request.getBirthday()));
         retorno.setLogin(request.getLogin());
@@ -125,8 +125,14 @@ public class UsuarioMapper {
     }
 
     public static GetUsuarioLogadoResponseRepresentation getUsuarioLogado(UsuarioEntity response) {
-
         return GetUsuarioLogadoResponseRepresentation.builder()
+                .idUsuarioLogado(response.getId())
+                .firstName(response.getFirstName())
+                .lastName(response.getLastName())
+                .email(response.getEmail())
+                .birthday(response.getBirthday().toString())
+                .login(response.getLogin())
+                .phone(response.getPhone())
                 .createdAt(response.getCreatedAt().toString())
                 .lastLogin(response.getLastLogin().toString())
                 .build();
