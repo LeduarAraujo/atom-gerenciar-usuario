@@ -625,8 +625,6 @@ components:
           type: string
         phone:
           type: string
-        carros:
-          type: string
         createdAt:
           type: string
         lastLogin:
