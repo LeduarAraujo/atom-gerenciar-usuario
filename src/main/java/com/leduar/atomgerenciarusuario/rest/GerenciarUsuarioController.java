@@ -117,4 +117,13 @@ public class GerenciarUsuarioController implements ApiApi {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }
     }
+
+    @Override
+    public ResponseEntity<SucessMessageRepresentation> atualizarCarroUsuarioLogado(String tokenJwt, Long idCarro, CarRequestRepresentation carRequestRepresentation) {
+        try {
+            return ResponseEntity.ok().body(service.atualizarCarroUsuarioLogado(tokenJwt, idCarro, carRequestRepresentation));
+        } catch (Exception ex) {
+            return (ResponseEntity) ErrorFormat.convertToEntity(ex);
+        }
+    }
 }

@@ -232,4 +232,24 @@ public class GerenciarUsuarioService {
                 .code(0)
                 .build();
     }
+
+    public SucessMessageRepresentation atualizarCarroUsuarioLogado(String tokenJwt, Long idCarro, CarRequestRepresentation carRequestRepresentation) {
+        UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+
+        usuarioEntity.getCars().forEach(carro -> {
+            if (carro.getId() == idCarro) {
+                carro.setCarYear(carRequestRepresentation.getYear());
+                carro.setColor(carRequestRepresentation.getColor());
+                carro.setLicensePlate(carRequestRepresentation.getLicensePlate());
+                carro.setModel(carRequestRepresentation.getModel());
+            }
+        });
+
+        repository.save(usuarioEntity);
+
+        return SucessMessageRepresentation.builder()
+                .message("Sucesso ao atualizar o veículo")
+                .code(0)
+                .build();
+    }
 }
