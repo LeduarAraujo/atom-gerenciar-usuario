@@ -5,9 +5,12 @@ import com.baeldung.openapi.model.DadosUsuarioResponseRepresentation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,4 +113,17 @@ public class UsuarioMapper {
                 .build();
     }
 
+    public static UsuarioEntity montarUsuarioAtualizado(UsuarioEntity usuarioEntity,
+                                                        DadosUsuarioResponseRepresentation body) {
+        usuarioEntity.setFirstName(body.getFirstName());
+        usuarioEntity.setLastName(body.getLastName());
+        usuarioEntity.setEmail(body.getEmail());
+        usuarioEntity.setBirthday(LocalDate.parse(body.getBirthday()));
+        usuarioEntity.setLogin(body.getLogin());
+        usuarioEntity.setPassword(body.getPassword());
+        usuarioEntity.setPhone(body.getPhone());
+        usuarioEntity.setCars(listCarToEntity(body.getCars()));
+
+        return usuarioEntity;
+    }
 }

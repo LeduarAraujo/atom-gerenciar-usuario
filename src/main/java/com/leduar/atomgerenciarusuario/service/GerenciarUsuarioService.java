@@ -71,7 +71,7 @@ public class GerenciarUsuarioService {
     }
 
     public SucessMessageRepresentation removerUsuario(Long id) throws Exception {
-        log.info("=== Consultar usuário");
+        log.info("=== Remover usuário");
         this.consultaUsuario(id);
         repository.deleteById(id);
 
@@ -79,6 +79,40 @@ public class GerenciarUsuarioService {
                 .message("Removido com sucesso")
                 .code(0)
                 .build();
+    }
+
+    public SucessMessageRepresentation atualizarUsuario(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
+        log.info("=== Atualizar usuário");
+        this.validarUpdate(id, body);
+        Optional<UsuarioEntity> response = repository.findById(id);
+
+        if (response.isPresent()){
+            repository.save(UsuarioMapper.montarUsuarioAtualizado(response.get(), body));
+            return SucessMessageRepresentation.builder()
+                    .message("Removido com sucesso")
+                    .code(0)
+                    .build();
+        }
+
+        throw new UsuarioNaoEncontradoException();
+    }
+
+    /**
+     *
+     * Tem a função de validar se o login ou o email ja conta na base de dados
+     *
+     * @param id
+     * @param body
+     * @throws Exception
+     */
+    private void validarUpdate(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
+        if (!repository.findUsuarioEntityByLoginAndIdIsNot(body.getLogin(), id).isEmpty()) {
+            throw new LoginExistenteException();
+        }
+
+        if (!repository.findUsuarioEntityByEmailAndIdIsNot(body.getEmail(), id).isEmpty()) {
+            throw new EmailExistenteException();
+        }
     }
 
 
@@ -130,6 +164,7 @@ public class GerenciarUsuarioService {
         Jwt.validateToken(tokenJwt);
         return GetUsuarioLogadoResponseRepresentation.builder().build();
     }
+
 
 
 }
