@@ -1,10 +1,6 @@
 package com.leduar.atomgerenciarusuario.utils;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;

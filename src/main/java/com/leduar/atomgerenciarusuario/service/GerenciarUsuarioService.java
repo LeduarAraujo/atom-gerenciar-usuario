@@ -7,6 +7,8 @@ import com.leduar.atomgerenciarusuario.mapper.UsuarioMapper;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
 import com.leduar.atomgerenciarusuario.utils.StringUtils;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -149,43 +151,17 @@ public class GerenciarUsuarioService {
     }
 
 
+    /*
+     * - Endpoints que requer Autenticação
+     */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) {
-        Jwt.validateToken(tokenJwt);
-        return GetUsuarioLogadoResponseRepresentation.builder().build();
+    public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) throws Exception {
+        Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
+        return UsuarioMapper.getUsuarioLogado(repository.
+                findById(Long.parseLong(
+                        sessao.getBody().get("id").toString())
+                ).get()
+        );
     }
-
-
-
-
-
 }

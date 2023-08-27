@@ -69,36 +69,9 @@ public class GerenciarUsuarioController implements ApiApi {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*
-    * - Endpoints que requer Autenticação
-    */
-
+     * - Endpoints que requer Autenticação
+     */
     @Override
     public ResponseEntity<GetUsuarioLogadoResponseRepresentation> getUsuarioLogado(String tokenJwt) {
         try {
@@ -107,4 +80,5 @@ public class GerenciarUsuarioController implements ApiApi {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }
     }
+
 }

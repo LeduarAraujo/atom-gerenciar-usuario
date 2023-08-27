@@ -59,8 +59,6 @@ paths:
         - Usuario
       summary: Lista todos os usuarios
       description: Lista todos os usuarios
-      security:
-        - OAuth2: [ ]
       responses:
         '200':
           description: Successful operation
@@ -264,6 +262,246 @@ paths:
             - write
             - read
 
+  /api/cars:
+    get:
+      operationId: listarCarrosUsuarioLogado
+      tags:
+        - Carro
+      summary: Listar todos os carros do usuário logado
+      description: Listar todos os carros do usuário logado
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listaCarrosUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+    post:
+      operationId: cadastrarCarroUsuarioLogado
+      tags:
+        - Carro
+      summary: Cadastrar um novo carro para o usuário logado
+      description: Cadastrar um novo carro para o usuário logado
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/carRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listaCarrosUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+
+  /api/cars/{idCarro}:
+    get:
+      operationId: buscarCarrosUsuarioLogado
+      tags:
+        - Carro
+      summary: Buscar um carro do usuário logado pelo id
+      description: Buscar um carro do usuário logado pelo id
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: idCarro
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listaCarrosUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+
+    delete:
+      operationId: removerCarroUsuarioLogado
+      tags:
+        - Carro
+      summary: Remover um usuário pelo id
+      description: Remover um usuário pelo id
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: idCarro
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listaCarrosUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+    post:
+      operationId: atualizarCarroUsuarioLogado
+      tags:
+        - Carro
+      summary: Atualizar um usuário pelo id
+      description: Atualizar um usuário pelo id
+      parameters:
+        - name: token_jwt
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: idCarro
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/carRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listaCarrosUsuarioLogadoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+        - gerenciador:
+            - write
+            - read
+
 components:
   schemas:
     SigninUsuarioRequest:
@@ -322,14 +560,31 @@ components:
         cars:
           type: array
           items:
-            $ref: '#/components/schemas/car'
+            $ref: '#/components/schemas/carResponse'
         createdAt:
           type: string
           example: "1990-05-01"
         lastLogin:
           type: string
           example: "1990-05-01"
-    car:
+
+    carRequest:
+      type: object
+      properties:
+        year:
+          type: integer
+          example: 2018
+        licensePlate:
+          type: string
+          example: "PDV-0625"
+        model:
+          type: string
+          example: "Audi"
+        color:
+          type: string
+          example: "White"
+
+    carResponse:
       type: object
       properties:
         idCarro:
@@ -355,7 +610,6 @@ components:
     atualizarUsuarioRequest:
       $ref: '#/components/schemas/dadosUsuarioResponse'
 
-
     getUsuarioLogadoResponse:
       type: object
       properties:
@@ -377,6 +631,21 @@ components:
           type: string
         lastLogin:
           type: string
+
+    listaCarrosUsuarioLogadoResponse:
+      type: object
+      properties:
+        idUsuario:
+          type: integer
+          format: int64
+          example: 1
+        firstName:
+          type: string
+          example: "Carlos"
+        carros:
+          type: array
+          items:
+            $ref: '#/components/schemas/carResponse'
 
     SucessMessage:
       type: object
