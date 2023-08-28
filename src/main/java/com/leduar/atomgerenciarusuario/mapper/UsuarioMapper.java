@@ -3,11 +3,15 @@ package com.leduar.atomgerenciarusuario.mapper;
 import com.baeldung.openapi.model.*;
 import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
+import com.leduar.atomgerenciarusuario.exceptions.CampoVazioException;
+import com.leduar.atomgerenciarusuario.exceptions.CarroNaoExistenteException;
+import com.leduar.atomgerenciarusuario.utils.StringUtils;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * - Classe responsável por realizar os parses dos objetos entity para representation e vice-versa.
@@ -152,5 +156,43 @@ public class UsuarioMapper {
         carroEntity.setCarYear(carRequestRepresentation.getYear());
 
         return carroEntity;
+    }
+
+
+    public static void validarCampos(DadosUsuarioResponseRepresentation body) throws CampoVazioException {
+        if (body == null ||
+                !StringUtils.validarString(body.getEmail()) ||
+                !StringUtils.validarString(body.getLogin()) ||
+                !StringUtils.validarString(body.getFirstName()) ||
+                !StringUtils.validarString(body.getBirthday()) ||
+                !StringUtils.validarString(body.getPassword()) ||
+                !StringUtils.validarString(body.getPhone()) ||
+                !StringUtils.validarString(body.getLastName())
+        )
+            throw new CampoVazioException();
+    }
+
+    public static void validarDadosCadastroCarro(CarRequestRepresentation body) throws CampoVazioException {
+        if (body == null ||
+                !StringUtils.validarString(body.getColor()) ||
+                !StringUtils.validarString(body.getModel()) ||
+                !StringUtils.validarString(body.getLicensePlate()) ||
+                body.getYear() == null)
+            throw new CampoVazioException();
+    }
+
+    public static CarResponseRepresentation montarCarroEntityBuscarUsuarioLogado(UsuarioEntity usuarioEntity, Long idCarro) throws Exception {
+        Optional<CarroEntity> carroEntity = usuarioEntity.getCars().stream().filter(carro -> carro.getId() == idCarro).findFirst();
+
+        if (!carroEntity.isEmpty()) {
+            return CarResponseRepresentation.builder()
+                    .idCarro(carroEntity.get().getId())
+                    .color(carroEntity.get().getColor())
+                    .licensePlate(carroEntity.get().getLicensePlate())
+                    .model(carroEntity.get().getModel())
+                    .year(carroEntity.get().getCarYear())
+                    .build();
+        }
+        throw new CarroNaoExistenteException();
     }
 }

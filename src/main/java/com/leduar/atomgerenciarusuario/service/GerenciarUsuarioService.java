@@ -1,14 +1,12 @@
 package com.leduar.atomgerenciarusuario.service;
 
 import com.baeldung.openapi.model.*;
-import com.leduar.atomgerenciarusuario.domain.entity.CarroEntity;
 import com.leduar.atomgerenciarusuario.domain.entity.UsuarioEntity;
 import com.leduar.atomgerenciarusuario.exceptions.*;
 import com.leduar.atomgerenciarusuario.mapper.UsuarioMapper;
 import com.leduar.atomgerenciarusuario.repository.CarroRepository;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
-import com.leduar.atomgerenciarusuario.utils.StringUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
@@ -49,37 +47,7 @@ public class GerenciarUsuarioService {
                 .build();
     }
 
-    /**
-     *  Tem a função de validar se o login ou o email ja conta na base de dados
-     * @param body
-     * @throws Exception
-     */
-    private void validarCadastro(DadosUsuarioResponseRepresentation body) throws Exception {
-        this.validarCampos(body);
-
-        if (!repository.findUsuarioEntityByLogin(body.getLogin()).isEmpty()) {
-            throw new LoginExistenteException();
-        }
-
-        if (!repository.findUsuarioEntityByEmail(body.getEmail()).isEmpty()) {
-            throw new EmailExistenteException();
-        }
-    }
-
-    private void validarCampos(DadosUsuarioResponseRepresentation body) throws CampoVazioException {
-        if (body == null ||
-                !StringUtils.validarString(body.getEmail()) ||
-                !StringUtils.validarString(body.getLogin()) ||
-                !StringUtils.validarString(body.getFirstName()) ||
-                !StringUtils.validarString(body.getBirthday()) ||
-                !StringUtils.validarString(body.getPassword()) ||
-                !StringUtils.validarString(body.getPhone()) ||
-                !StringUtils.validarString(body.getLastName())
-        )
-            throw new CampoVazioException();
-    }
-
-    public DadosUsuarioResponseRepresentation consultaUsuario(Long id) throws Exception {
+    public DadosUsuarioResponseRepresentation buscarUsuario(Long id) throws Exception {
         log.info("=== Consultar usuário");
         Optional<UsuarioEntity> response = repository.findById(id);
 
@@ -91,7 +59,7 @@ public class GerenciarUsuarioService {
 
     public SucessMessageRepresentation removerUsuario(Long id) throws Exception {
         log.info("=== Remover usuário");
-        this.consultaUsuario(id);
+        this.buscarUsuario(id);
         repository.deleteById(id);
 
         return SucessMessageRepresentation.builder()
@@ -117,26 +85,6 @@ public class GerenciarUsuarioService {
         throw new UsuarioNaoEncontradoException();
     }
 
-    /**
-     *
-     * Tem a função de validar se o login ou o email ja conta na base de dados
-     *
-     * @param id
-     * @param body
-     * @throws Exception
-     */
-    private void validarUpdate(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
-        this.validarCampos(body);
-
-        if (!repository.findUsuarioEntityByLoginAndIdNot(body.getLogin(), id).isEmpty()) {
-            throw new LoginExistenteException();
-        }
-
-        if (!repository.findUsuarioEntityByEmailAndIdNot(body.getEmail(), id).isEmpty()) {
-            throw new EmailExistenteException();
-        }
-    }
-
     public SigninUsuarioResponseRepresentation iniciarSessao(SigninUsuarioRequestRepresentation body) throws LoginSenhaException {
         log.info("=== Tentando iniciar sessão de login do usuario");
         Optional<UsuarioEntity> optional = repository.findUsuarioEntityByLoginAndPassword(body.getLogin(), body.getSenha());
@@ -160,25 +108,21 @@ public class GerenciarUsuarioService {
      */
 
 
-    public GetUsuarioLogadoResponseRepresentation getDadosUsuario(String tokenJwt) throws Exception {
+    public GetUsuarioLogadoResponseRepresentation getDadosUsuarioLogado(String tokenJwt) throws Exception {
+        log.info("=== Consultando dados do usuário logado");
         return UsuarioMapper.getUsuarioLogado(getUsuarioLogado(tokenJwt));
     }
 
-    private UsuarioEntity getUsuarioLogado(String tokenJwt) {
-        Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
-        return repository.findById(Long.parseLong(
-                sessao.getBody().get("id").toString())
-        ).get();
-    }
-
     public ListaCarrosUsuarioLogadoResponseRepresentation listarCarrosUsuarioLogado(String tokenJwt) {
+        log.info("=== Listando os carros do usuário logado");
         return UsuarioMapper.getListaCarrosUsuarioLogado(getUsuarioLogado(tokenJwt));
     }
 
     public SucessMessageRepresentation cadastrarCarroUsuarioLogado(String tokenJwt
             , CarRequestRepresentation carRequestRepresentation) throws Exception {
+        log.info("=== Cadastrando o carro para o usuário logado");
 
-        this.validarDadosCadastroCarro(carRequestRepresentation);
+        UsuarioMapper.validarDadosCadastroCarro(carRequestRepresentation);
         UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
         this.validarDadosCadastroCarroExistente(carRequestRepresentation);
 
@@ -191,38 +135,16 @@ public class GerenciarUsuarioService {
                 .build();
     }
 
-    private void validarDadosCadastroCarro(CarRequestRepresentation body) throws CampoVazioException {
-        if (body == null ||
-                !StringUtils.validarString(body.getColor()) ||
-                !StringUtils.validarString(body.getModel()) ||
-                !StringUtils.validarString(body.getLicensePlate()) ||
-                body.getYear() == null)
-            throw new CampoVazioException();
-    }
-
-    private void validarDadosCadastroCarroExistente(CarRequestRepresentation body) throws Exception {
-        if(carroRepository.existsCarroEntitiesByLicensePlate(body.getLicensePlate()))
-            throw new PlacaExistenteException();
-    }
-
     public CarResponseRepresentation buscarCarrosUsuarioLogado(String tokenJwt, Long idCarro) throws Exception {
+        log.info("=== Consultando o carro do usuário logado");
         UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
 
-        Optional<CarroEntity> carroEntity = usuarioEntity.getCars().stream().filter(carro -> carro.getId() == idCarro).findFirst();
-
-        if (!carroEntity.isEmpty()) {
-            return CarResponseRepresentation.builder()
-                    .idCarro(carroEntity.get().getId())
-                    .color(carroEntity.get().getColor())
-                    .licensePlate(carroEntity.get().getLicensePlate())
-                    .model(carroEntity.get().getModel())
-                    .year(carroEntity.get().getCarYear())
-                    .build();
-        }
-        throw new CarroNaoExistenteException();
+        return UsuarioMapper.montarCarroEntityBuscarUsuarioLogado(getUsuarioLogado(tokenJwt), idCarro);
     }
 
     public SucessMessageRepresentation removerCarroUsuarioLogado(String tokenJwt, Long idCarro) {
+        log.info("=== Removendo o carro do usuário logado");
+
         UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
         usuarioEntity.getCars().removeIf(carro -> carro.getId() == idCarro);
         repository.save(usuarioEntity);
@@ -233,8 +155,12 @@ public class GerenciarUsuarioService {
                 .build();
     }
 
-    public SucessMessageRepresentation atualizarCarroUsuarioLogado(String tokenJwt, Long idCarro, CarRequestRepresentation carRequestRepresentation) {
+    public SucessMessageRepresentation atualizarCarroUsuarioLogado(String tokenJwt, Long idCarro, CarRequestRepresentation carRequestRepresentation) throws Exception {
+        log.info("=== Atualizando o carro do usuário logado");
+
+        UsuarioMapper.validarDadosCadastroCarro(carRequestRepresentation);
         UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+        this.validarDadosCadastroCarroExistente(carRequestRepresentation);
 
         usuarioEntity.getCars().forEach(carro -> {
             if (carro.getId() == idCarro) {
@@ -251,5 +177,69 @@ public class GerenciarUsuarioService {
                 .message("Sucesso ao atualizar o veículo")
                 .code(0)
                 .build();
+    }
+
+
+    /*
+    *
+    *  Metodos privados abaixo.
+    *
+    */
+
+
+    private void validarDadosCadastroCarroExistente(CarRequestRepresentation body) throws Exception {
+        if(carroRepository.existsCarroEntitiesByLicensePlate(body.getLicensePlate()))
+            throw new PlacaExistenteException();
+    }
+
+    /**
+     *  Validar se todos os campos foram preenchidos e se o login ou o email ja conta na base de dados
+     * @param body
+     * @throws Exception
+     */
+    private void validarCadastro(DadosUsuarioResponseRepresentation body) throws Exception {
+        UsuarioMapper.validarCampos(body);
+
+        if (!repository.findUsuarioEntityByLogin(body.getLogin()).isEmpty()) {
+            throw new LoginExistenteException();
+        }
+
+        if (!repository.findUsuarioEntityByEmail(body.getEmail()).isEmpty()) {
+            throw new EmailExistenteException();
+        }
+    }
+
+    /**
+     *
+     * Tem a função de validar se o login ou o email ja conta na base de dados
+     *
+     * @param id
+     * @param body
+     * @throws Exception
+     */
+    private void validarUpdate(Long id, DadosUsuarioResponseRepresentation body) throws Exception {
+        UsuarioMapper.validarCampos(body);
+
+        if (!repository.findUsuarioEntityByLoginAndIdNot(body.getLogin(), id).isEmpty()) {
+            throw new LoginExistenteException();
+        }
+
+        if (!repository.findUsuarioEntityByEmailAndIdNot(body.getEmail(), id).isEmpty()) {
+            throw new EmailExistenteException();
+        }
+    }
+
+
+    /**
+     *  Valida se o Token JWT é valido e busca da base os dados desse usuario logado
+     *
+     * @param tokenJwt
+     * @return
+     */
+    private UsuarioEntity getUsuarioLogado(String tokenJwt) {
+        Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
+        return repository.findById(Long.parseLong(
+                sessao.getBody().get("id").toString())
+        ).get();
     }
 }
