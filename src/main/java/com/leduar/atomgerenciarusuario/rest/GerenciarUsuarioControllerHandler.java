@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ *  Classe responsável por monitorar possíveis erros que não são possíveis de ser tratado antes da chamada do rest api
+ *  com isso, é possível tratar melhor a forma de escrita do erro e detalhar possíveis tratamentos e entregar
+ *  um status code correspondente ao erro, e não simplesmente um codigo 500 sem explicação do ocorrido.
+ */
 @Slf4j
 @ControllerAdvice
 public class GerenciarUsuarioControllerHandler {
@@ -49,13 +54,13 @@ public class GerenciarUsuarioControllerHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), "Invalid fields: ");
     }
 
-    private ErrorMessageRepresentation createError(Exception exception, int code) {
+    private ErrorMessageRepresentation createError(Exception exception, int code, String... msg) {
         return ErrorMessageRepresentation.builder()
                 .errorCode(code)
-                .message(exception.getMessage())
+                .message(msg != null ? msg + exception.getMessage() : exception.getMessage())
                 .build();
     }
 }

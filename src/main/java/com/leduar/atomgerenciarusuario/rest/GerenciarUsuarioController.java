@@ -15,7 +15,7 @@ public class GerenciarUsuarioController implements ApiApi {
     private final GerenciarUsuarioService service;
 
     @Override
-    public ResponseEntity<ListUsersResponseRepresentation> listUsers() {
+    public ResponseEntity<ListUsersResponseRepresentation> listarUsuarios() {
         try {
             return ResponseEntity.ok().body(service.listarUsuarios());
         } catch (Exception ex) {
@@ -24,7 +24,7 @@ public class GerenciarUsuarioController implements ApiApi {
     }
 
     @Override
-    public ResponseEntity<SucessMessageRepresentation> cadUsers(DadosUsuarioResponseRepresentation body) {
+    public ResponseEntity<SucessMessageRepresentation> cadastrarUsuario(DadosUsuarioResponseRepresentation body) {
         try {
             return ResponseEntity.ok().body(service.cadastrarUsuario(body));
         } catch (Exception ex) {
@@ -35,7 +35,7 @@ public class GerenciarUsuarioController implements ApiApi {
     @Override
     public ResponseEntity<DadosUsuarioResponseRepresentation> buscarUsuario(Long id) {
         try {
-            return ResponseEntity.ok().body(service.consultaUsuario(id));
+            return ResponseEntity.ok().body(service.buscarUsuario(id));
         } catch (Exception ex) {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }
@@ -60,7 +60,7 @@ public class GerenciarUsuarioController implements ApiApi {
     }
 
     @Override
-    public ResponseEntity<SigninUsuarioResponseRepresentation> signin(SigninUsuarioRequestRepresentation signinUsuarioRequestRepresentation) {
+    public ResponseEntity<SigninUsuarioResponseRepresentation> iniciarSessao(SigninUsuarioRequestRepresentation signinUsuarioRequestRepresentation) {
         try {
             return ResponseEntity.ok().body(service.iniciarSessao(signinUsuarioRequestRepresentation));
         } catch (Exception ex) {
@@ -73,9 +73,9 @@ public class GerenciarUsuarioController implements ApiApi {
      * - Endpoints que requer Autenticação
      */
     @Override
-    public ResponseEntity<GetUsuarioLogadoResponseRepresentation> getUsuarioLogado(String tokenJwt) {
+    public ResponseEntity<GetUsuarioLogadoResponseRepresentation> getDadosUsuarioLogado(String tokenJwt) {
         try {
-            return ResponseEntity.ok().body(service.getDadosUsuario(tokenJwt));
+            return ResponseEntity.ok().body(service.getDadosUsuarioLogado(tokenJwt));
         } catch (Exception ex) {
             return (ResponseEntity) ErrorFormat.convertToEntity(ex);
         }

@@ -20,7 +20,7 @@ paths:
   # Rotas que não exigem autenticação
   /api/signin:
     post:
-      operationId: signin
+      operationId: iniciarSessao
       tags:
         - Usuario
       summary: Realiza o login do usuario
@@ -54,7 +54,7 @@ paths:
 
   /api/users:
     get:
-      operationId: listUsers
+      operationId: listarUsuarios
       tags:
         - Usuario
       summary: Lista todos os usuarios
@@ -79,7 +79,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
     post:
-      operationId: cadUsers
+      operationId: cadastrarUsuario
       tags:
         - Usuario
       summary: Cadastra o usuario
@@ -221,7 +221,7 @@ paths:
   # Rotas que exigem autenticação
   /api/me:
     get:
-      operationId: getUsuarioLogado
+      operationId: getDadosUsuarioLogado
       tags:
         - Carro
       summary: Retorna as informações do usuario logado
