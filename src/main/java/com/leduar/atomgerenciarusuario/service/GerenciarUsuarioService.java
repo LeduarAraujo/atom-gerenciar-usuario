@@ -8,6 +8,7 @@ import com.leduar.atomgerenciarusuario.repository.CarroRepository;
 import com.leduar.atomgerenciarusuario.repository.UsuarioRepository;
 import com.leduar.atomgerenciarusuario.utils.Jwt;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,9 +98,9 @@ public class GerenciarUsuarioService {
             return SigninUsuarioResponseRepresentation.builder()
                     .tokenJwt(Jwt.gerarToken(usuario.getFirstName(), usuario.getId()))
                     .build();
-        } else {
-            throw new LoginSenhaException();
         }
+
+        throw new LoginSenhaException();
     }
 
 
@@ -238,8 +239,14 @@ public class GerenciarUsuarioService {
      */
     private UsuarioEntity getUsuarioLogado(String tokenJwt) {
         Jws<Claims> sessao = Jwt.validateToken(tokenJwt);
-        return repository.findById(Long.parseLong(
+        Optional<UsuarioEntity> usuarioLogado = repository.findById(Long.parseLong(
                 sessao.getBody().get("id").toString())
-        ).get();
+        );
+
+        if(!usuarioLogado.isPresent()) {
+            throw new ExpiredJwtException(null, null, "Usuario Logado não Existente na base");
+        }
+
+        return usuarioLogado.get();
     }
 }

@@ -24,31 +24,31 @@ public class GerenciarUsuarioControllerHandler {
     @ExceptionHandler(NumberFormatException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerNumberFormatException(final NumberFormatException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), null);
     }
 
     @ExceptionHandler(JsonMappingException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerJsonMappingException(final JsonMappingException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), null);
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerMissingRequestHeaderException(final MissingRequestHeaderException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), null);
     }
 
     @ExceptionHandler(InvalidFormatException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerInvalidFormatException(final InvalidFormatException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), null);
     }
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageRepresentation handlerNullPointerException(final NullPointerException exception) {
-        return createError(exception, HttpStatus.BAD_REQUEST.value());
+        return createError(exception, HttpStatus.BAD_REQUEST.value(), null);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -57,7 +57,7 @@ public class GerenciarUsuarioControllerHandler {
         return createError(exception, HttpStatus.BAD_REQUEST.value(), "Invalid fields: ");
     }
 
-    private ErrorMessageRepresentation createError(Exception exception, int code, String... msg) {
+    private ErrorMessageRepresentation createError(Exception exception, int code, String msg) {
         return ErrorMessageRepresentation.builder()
                 .errorCode(code)
                 .message(msg != null ? msg + exception.getMessage() : exception.getMessage())
