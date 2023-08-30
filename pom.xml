@@ -14,7 +14,7 @@
     <name>atom-gerenciar-usuario</name>
     <description>atom-gerenciar-usuario</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <springdoc.version>2.1.0</springdoc.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
     </properties>
