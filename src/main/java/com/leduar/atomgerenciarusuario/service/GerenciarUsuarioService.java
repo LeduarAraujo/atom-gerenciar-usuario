@@ -138,7 +138,7 @@ public class GerenciarUsuarioService {
 
     public CarResponseRepresentation buscarCarrosUsuarioLogado(String tokenJwt, Long idCarro) throws Exception {
         log.info("=== Consultando o carro do usuário logado");
-        UsuarioEntity usuarioEntity = getUsuarioLogado(tokenJwt);
+        this.getUsuarioLogado(tokenJwt);
 
         return UsuarioMapper.montarCarroEntityBuscarUsuarioLogado(getUsuarioLogado(tokenJwt), idCarro);
     }
