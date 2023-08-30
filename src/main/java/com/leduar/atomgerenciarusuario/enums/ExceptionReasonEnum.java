@@ -15,7 +15,7 @@ public enum ExceptionReasonEnum {
     EMAIL_JA_EXISTE_NA_BASE(EmailExistenteException.class, HttpStatus.CONFLICT, "Email already exists"),
     USUARIO_NAO_ENCONTRADO(UsuarioNaoEncontradoException.class, HttpStatus.BAD_REQUEST, "Usuário não encontrado"),
     CAMPO_NAO_PREENCHIDO(CampoVazioException.class, HttpStatus.BAD_REQUEST, "Missing fields"),
-    TOKEN_INVALIDO(MalformedJwtException.class, HttpStatus.UNAUTHORIZED, "“Unauthorized”"),
+    TOKEN_INVALIDO(MalformedJwtException.class, HttpStatus.UNAUTHORIZED, "Unauthorized"),
     TOKEN_EXPIRADO(ExpiredJwtException.class,HttpStatus.UNAUTHORIZED, "Unauthorized - invalid session"),
     PLACA_EXISTENTE(PlacaExistenteException.class, HttpStatus.CONFLICT, "License plate already exists"),
     CARRO_NAO_ENCONTRADO(CarroNaoExistenteException.class, HttpStatus.BAD_REQUEST, "Carro não encontrado")
