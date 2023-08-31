@@ -405,8 +405,8 @@ paths:
       operationId: removerCarroUsuarioLogado
       tags:
         - Carro
-      summary: Remover um usuário pelo id
-      description: Remover um usuário pelo id
+      summary: Remover o carro de um usuário pelo id
+      description: Remover o carro de um usuário pelo id
       parameters:
         - name: token_jwt
           in: header
@@ -452,8 +452,8 @@ paths:
       operationId: atualizarCarroUsuarioLogado
       tags:
         - Carro
-      summary: Atualizar um usuário pelo id
-      description: Atualizar um usuário pelo id
+      summary: Atualizar o carro de um usuário pelo id
+      description: Atualizar o carro de um usuário pelo id
       parameters:
         - name: token_jwt
           in: header
